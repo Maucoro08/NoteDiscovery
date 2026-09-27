@@ -180,8 +180,28 @@ docker-compose -f docker-compose.ghcr.yml up -d
 ```bash
 git clone https://github.com/gamosoft/notediscovery.git
 cd notediscovery
-docker-compose up -d
+docker compose up -d
 ```
+
+**Option 3: One-line deploy script**
+
+[`scripts/deploy.sh`](scripts/deploy.sh) automates clone + build + start in a single command:
+
+```bash
+# Clone, build and start
+bash <(curl -fsSL https://raw.githubusercontent.com/gamosoft/notediscovery/main/scripts/deploy.sh) \
+  https://github.com/gamosoft/notediscovery.git
+
+# Build image only, without starting containers
+bash <(curl -fsSL https://raw.githubusercontent.com/gamosoft/notediscovery/main/scripts/deploy.sh) \
+  --build-only https://github.com/gamosoft/notediscovery.git
+
+# If you already cloned the repo, run from inside it
+./scripts/deploy.sh            # build + start
+./scripts/deploy.sh --build-only   # build only
+```
+
+> 💡 The script detects `docker compose` (v2) and falls back to `docker-compose` (v1) automatically.
 
 See [Advanced Docker Setup](#advanced-docker-setup) for volume details.
 
