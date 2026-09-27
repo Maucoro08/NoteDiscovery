@@ -1,6 +1,7 @@
 services:
   notediscovery:
     build: .
+    image: notediscovery:local
     container_name: notediscovery
     ports:
       - "${PORT:-8000}:${PORT:-8000}"

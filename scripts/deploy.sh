@@ -5,7 +5,9 @@
 #   bash deploy.sh [options] [github-url] [target-directory]
 #
 # Options:
-#   -b, --build-only   Build the Docker image without starting containers
+#   -b, --build-only   Build the Docker image and write a production-ready
+#                      docker-compose.yml (no build: key, image: only).
+#                      Containers are NOT started. Ideal for Portainer stacks.
 #
 # Examples:
 #   bash deploy.sh https://github.com/user/NoteDiscovery
@@ -102,8 +104,42 @@ info "Building Docker image..."
 $COMPOSE build
 
 if [[ "$BUILD_ONLY" == true ]]; then
-    info "Build complete (--build-only). Containers were NOT started."
-    info "To start later: $COMPOSE up -d"
+    info "Writing production docker-compose.yml (image-only, no build key)..."
+    cat > docker-compose.yml << 'EOF'
+services:
+  notediscovery:
+    image: notediscovery:local
+    container_name: notediscovery
+    ports:
+      - "${PORT:-8000}:${PORT:-8000}"
+    volumes:
+      # Required: Your notes
+      - ./data:/app/data
+      # Optional: Uncomment to customize (file/folder must exist with content!)
+      # - ./config.yaml:/app/config.yaml
+      # - ./themes:/app/themes
+      # - ./plugins:/app/plugins
+      # - ./locales:/app/locales
+    restart: unless-stopped
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      PORT: ${PORT:-8000}
+      TZ: ${TZ:-UTC}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os, urllib.request; urllib.request.urlopen(f'http://localhost:{os.getenv(\"PORT\", \"8000\")}/health')"]
+      interval: 60s
+      timeout: 3s
+      retries: 3
+      start_period: 15s
+EOF
+    info "docker-compose.yml updated — ready for Portainer or 'docker compose up -d'."
     exit 0
 fi
 
