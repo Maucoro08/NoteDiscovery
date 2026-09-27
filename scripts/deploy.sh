@@ -100,8 +100,10 @@ fi
 
 # ── Build & start ─────────────────────────────────────────────────────────────
 
-info "Building Docker image..."
-$COMPOSE build
+# Use docker build directly so the build always works regardless of what
+# docker-compose.yml contains (it may already be the production image-only version).
+info "Building Docker image (notediscovery:local)..."
+docker build -t notediscovery:local .
 
 if [[ "$BUILD_ONLY" == true ]]; then
     info "Writing production docker-compose.yml (image-only, no build key)..."
