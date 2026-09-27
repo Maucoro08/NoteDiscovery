@@ -95,8 +95,10 @@ ENV PORT=8000
 
 # Health check (uses PORT env var)
 HEALTHCHECK --interval=60s --timeout=3s --start-period=15s --retries=3 \
-    CMD python -c "import os, urllib.request; urllib.request.urlopen(f'http://localhost:{os.getenv(\"PORT\", \"8000\")}/health')"
+    CMD python -c "import os, urllib.request; urllib.request.urlopen(f'http://127.0.0.1:{os.getenv(\"PORT\", \"8000\")}/health')"
 
 # Run the application (shell form to allow environment variable expansion)
 # Use exec to replace shell with uvicorn (receives SIGTERM directly for graceful shutdown)
-CMD exec uvicorn backend.main:app --host 0.0.0.0 --port $PORT --timeout-graceful-shutdown 2
+# Bind to :: (IPv6 wildcard) which also accepts IPv4 on dual-stack systems,
+# preventing ~10s delays when clients connect via localhost (which resolves to ::1 first).
+CMD exec uvicorn backend.main:app --host "::" --port $PORT --timeout-graceful-shutdown 2
