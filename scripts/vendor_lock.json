@@ -56,9 +56,9 @@
     }
   },
   "tailwindcss": {
-    "version": "3.4.17",
+    "version": "4.1.4",
     "hashes": {
-      "tailwind.min.js": "176e894661aa9cdc9a5cba6c720044cbbf7b8bd80d1c9a142a7c24b1b6c50d15"
+      "tailwind.min.js": "2fb4b0053ccfcacf49dcad3135789f4275cc2b4ed3f89f67ca412dceaf678e1f"
     }
   },
   "vis-network": {

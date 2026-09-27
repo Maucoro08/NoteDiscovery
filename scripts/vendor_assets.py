@@ -46,10 +46,10 @@ HLJS_STYLES = ["github.min.css", "github-dark.min.css"]
 PACKAGES = [
     {
         "name": "tailwindcss",
-        "version": "3.4.17",
+        "version": "4.1.4",
         "license": "MIT",
-        "license_url": "https://raw.githubusercontent.com/tailwindlabs/tailwindcss/v3.4.17/LICENSE",
-        "files": {"tailwind.min.js": "https://cdn.tailwindcss.com/3.4.17"},
+        "license_url": "https://raw.githubusercontent.com/tailwindlabs/tailwindcss/v4.1.4/LICENSE",
+        "files": {"tailwind.min.js": "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.4/dist/index.global.js"},
     },
     {
         "name": "alpinejs",
