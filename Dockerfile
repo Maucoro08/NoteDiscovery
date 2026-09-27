@@ -1,3 +1,6 @@
+# Global build arg — override with: docker build --build-arg PYTHON_VERSION=3.12 .
+ARG PYTHON_VERSION=3.11
+
 # Stage 1: Minify frontend assets
 FROM node:20-alpine AS minifier
 
@@ -30,9 +33,6 @@ RUN html-minifier-terser \
     -o frontend/login.html \
     frontend/login.html
 
-# Global build arg — override with: docker build --build-arg PYTHON_VERSION=3.12 .
-ARG PYTHON_VERSION=3.11
-
 # Stage 2: Download browser libraries so the runtime needs no CDN
 FROM python:${PYTHON_VERSION}-slim AS vendor
 
@@ -42,8 +42,6 @@ COPY scripts/vendor_assets.py scripts/vendor_lock.json ./scripts/
 RUN python scripts/vendor_assets.py --dest /vendor
 
 # Stage 3: Install Python dependencies
-# ARG must be re-declared in each stage that needs it
-ARG PYTHON_VERSION=3.11
 FROM python:${PYTHON_VERSION}-slim AS builder
 
 WORKDIR /app
@@ -52,7 +50,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # Stage 4: Final minimal image
-ARG PYTHON_VERSION=3.11
 FROM python:${PYTHON_VERSION}-slim
 
 # Create a non-root user for security
